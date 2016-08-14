@@ -60,6 +60,11 @@ END
             @opts[:expiration] = Time.now.to_i + v
           end
         end
+        
+        opts.on('-h', '--help', 'Show this message and exit') do
+          puts opts
+          exit
+        end
       end
 
       opt_parser.parse!
