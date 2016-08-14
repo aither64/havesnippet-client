@@ -4,6 +4,8 @@ require 'yaml'
 
 module HaveSnippet::Client
   class Cli
+    ACCESS_MODES = %w(public unlisted logged private)
+
     def self.run
       new.run
     end
@@ -47,7 +49,7 @@ END
           @opts[:title] = v
         end
         
-        opts.on('-a', '--access MODE', %w(public unlisted logged private), 'Accessibility') do |v|
+        opts.on('-a', '--access MODE', ACCESS_MODES, "Accessibility (#{ACCESS_MODES.join(',')})") do |v|
           @opts[:accessibility] = translate_access(v)
         end
 
@@ -122,9 +124,8 @@ END
     end
 
     def translate_access(v)
-      dict = %w(public unlisted logged private)
-      i = dict.index(v)
-      raise ArgumentError, "'#[v}' is not a valid access mode" unless i
+      i = ACCESS_MODES.index(v)
+      raise ArgumentError, "'#{v}' is not a valid access mode" unless i
       i
     end
 
