@@ -37,6 +37,10 @@ END
           @opts[:api_key] = v
         end
         
+        opts.on('-L', '--list-languages', 'List available languages') do
+          @opts[:languages] = true
+        end
+        
         opts.on('-t', '--title TITLE', 'Title for the snippet') do |v|
           @opts[:title] = v
         end
@@ -70,9 +74,18 @@ END
       opt_parser.parse!
 
       @opts[:file_name] = File.basename(ARGV[0]) if ARGV[0] && !@opts[:file_name]
-      @opts[:content] = (ARGV[0] ? File.open(ARGV[0]) : STDIN).read
 
       c = HaveSnippet::Client::Client.new(@opts[:url], @opts[:api_key])
+
+      if @opts[:languages]
+        c.languages.sort do |a, b|
+          a[0] <=> b[0]
+        end.each { |k, v| puts "#{k.ljust(16)} #{v}" }
+        exit
+      end
+
+      @opts[:content] = (ARGV[0] ? File.open(ARGV[0]) : STDIN).read
+
       res = c.paste(@opts)
 
       if res.ok?

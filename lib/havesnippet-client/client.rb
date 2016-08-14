@@ -8,6 +8,13 @@ module HaveSnippet::Client
       @api_key = api_key
     end
 
+    def languages
+      uri = URI(File.join(@server, '/api/languages/?format=json'))
+      res = Net::HTTP.get_response(uri)
+      fail "got #{res.code}" unless res.code == '200'
+      JSON.parse(res.body)
+    end
+
     def paste(opts)
       data = {}
       data.update(opts)
