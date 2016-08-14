@@ -48,6 +48,18 @@ END
         opts.on('-e', '--expiration DATE', 'Date of expiration in ISO 8601') do |v|
           @opts[:expiration] = Time.iso8601(v).to_i
         end
+
+        {
+          hour:  60*60,
+          day:   60*60*24,
+          week:  60*60*24*7,
+          month: 60*60*24*7*30,
+          year:  60*60*24*7*30*12
+        }.each do |k, v|
+          opts.on("--#{k}", "Expiration in one #{k}") do
+            @opts[:expiration] = Time.now.to_i + v
+          end
+        end
       end
 
       opt_parser.parse!
