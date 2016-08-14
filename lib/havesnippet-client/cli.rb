@@ -1,5 +1,6 @@
 require 'optparse'
 require 'time'
+require 'yaml'
 
 module HaveSnippet::Client
   class Cli
@@ -9,6 +10,7 @@ module HaveSnippet::Client
 
     def initialize
       @opts = {}
+      load
     end
 
     def run
@@ -34,7 +36,7 @@ END
         end
         
         opts.on('-l', '--language LANG', 'Language used to highlight the syntax') do |v|
-          @opts[:api_key] = v
+          @opts[:language] = v
         end
         
         opts.on('-L', '--list-languages', 'List available languages') do
@@ -50,6 +52,7 @@ END
         end
 
         opts.on('-e', '--expiration DATE', 'Date of expiration in ISO 8601') do |v|
+          @expiration_delta = nil
           @opts[:expiration] = Time.iso8601(v).to_i
         end
 
@@ -62,9 +65,18 @@ END
         }.each do |k, v|
           opts.on("--#{k}", "Expiration in one #{k}") do
             @opts[:expiration] = Time.now.to_i + v
+            @expiration_delta = v
           end
         end
         
+        opts.on('--clear', 'Clear any previously configured options') do
+          @opts.clear
+        end
+        
+        opts.on('--save', 'Save settings to config file') do
+          @opts[:save] = true
+        end
+
         opts.on('-h', '--help', 'Show this message and exit') do
           puts opts
           exit
@@ -84,6 +96,11 @@ END
         exit
       end
 
+      if @opts[:save]
+        save
+        exit
+      end
+
       @opts[:content] = (ARGV[0] ? File.open(ARGV[0]) : STDIN).read
 
       res = c.paste(@opts)
@@ -92,9 +109,14 @@ END
         puts res.url
 
       else
-        warn "Error occured:"
-        res.errors.each do |k, v|
-          warn "\t#{k}: #{v.join('; ')}"
+        if res.errors
+          warn "Error occured:"
+          res.errors.each do |k, v|
+            warn "\t#{k}: #{v.join('; ')}"
+          end
+
+        else
+          warn "Unknown error occured"
         end
       end
     end
@@ -104,6 +126,32 @@ END
       i = dict.index(v)
       raise ArgumentError, "'#[v}' is not a valid access mode" unless i
       i
+    end
+
+    def load
+      return unless File.exists?(config_path)
+
+      @opts = YAML.load(File.read(config_path))
+      
+      if @opts[:expiration_interval]
+        @opts[:expiration] = Time.now.to_i + @opts[:expiration_interval]
+      end
+    end
+
+    def save
+      data = @opts.clone
+      data.delete(:save)
+
+      if @expiration_delta
+        data[:expiration_interval] = @expiration_delta
+        data.delete(:expiration)
+      end
+
+      File.open(config_path, 'w') { |f| f.write(YAML.dump(data)) }
+    end
+
+    def config_path
+      File.join(Dir.home, '.havesnippet')
     end
   end
 end
