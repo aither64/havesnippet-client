@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'havesnippet-client/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'vpsfree-irc-bot'
+  spec.name          = 'havesnippet-client'
   spec.version       = HaveSnippet::Client::VERSION
   spec.authors       = ['Jakub Skokan']
   spec.email         = ['aither@havefun.cz']
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 1.6'
+  spec.add_development_dependency 'bundler', '~> 1.11'
   spec.add_development_dependency 'rake'
 
   spec.add_runtime_dependency 'json'
