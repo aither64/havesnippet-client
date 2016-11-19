@@ -71,6 +71,11 @@ END
             @expiration_delta = v
           end
         end
+
+        opts.on('--forever', 'Disable expiration') do
+          @opts[:expiration] = nil
+          @expiration_delta = nil
+        end
         
         opts.on('--clear', 'Clear any previously configured options') do
           @opts.clear
@@ -147,6 +152,9 @@ END
       if @expiration_delta
         data[:expiration_interval] = @expiration_delta
         data.delete(:expiration)
+
+      else
+        data.delete(:expiration_interval)
       end
 
       File.open(config_path, 'w') { |f| f.write(YAML.dump(data)) }

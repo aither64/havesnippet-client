@@ -31,6 +31,7 @@ There are two executables, `havesnippet` and its abbreviation `hs`.
             --week                       Expiration in one week
             --month                      Expiration in one month
             --year                       Expiration in one year
+            --forever                    Disable expiration
             --clear                      Clear any previously configured options
             --save                       Save settings to config file
         -h, --help                       Show this message and exit
