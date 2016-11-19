@@ -1,4 +1,5 @@
 - Fix expiration set by --year and --month
+- Use DateTime.iso8601 to parse expiration times
 
 * Mon Aug 15 2016 - version 1.0.0
 - Initial release

@@ -1,3 +1,4 @@
+require 'date'
 require 'optparse'
 require 'time'
 require 'yaml'
@@ -55,7 +56,7 @@ END
 
         opts.on('-e', '--expiration DATE', 'Date of expiration in ISO 8601') do |v|
           @expiration_delta = nil
-          @opts[:expiration] = Time.iso8601(v).to_i
+          @opts[:expiration] = DateTime.iso8601(v).to_time.to_i
         end
 
         {
