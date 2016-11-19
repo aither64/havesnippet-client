@@ -62,8 +62,8 @@ END
           hour:  60*60,
           day:   60*60*24,
           week:  60*60*24*7,
-          month: 60*60*24*7*30,
-          year:  60*60*24*7*30*12
+          month: 60*60*24*30,
+          year:  60*60*24*30*12,
         }.each do |k, v|
           opts.on("--#{k}", "Expiration in one #{k}") do
             @opts[:expiration] = Time.now.to_i + v

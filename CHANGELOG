@@ -1,0 +1,4 @@
+- Fix expiration set by --year and --month
+
+* Mon Aug 15 2016 - version 1.0.0
+- Initial release
